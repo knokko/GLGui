@@ -265,7 +265,7 @@ public class GLGuiWindow extends GuiWindow {
 
 	@Override
 	public void run(int fps) {
-		while(isOpen() && !Display.isCloseRequested()){
+		while(!Display.isCloseRequested() && !shouldStopRunning){
 			if(listener == null || !listener.preRunLoop()){
 				update();
 				render();
@@ -274,8 +274,7 @@ public class GLGuiWindow extends GuiWindow {
 					listener.postRunLoop();
 			}
 		}
-		if(isOpen())
-			close();
+		close();
 	}
 
 	@Override
