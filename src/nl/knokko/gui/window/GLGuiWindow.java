@@ -173,8 +173,12 @@ public class GLGuiWindow extends GuiWindow {
 		try {
 			prepare();
 			ContextAttribs attribs = new ContextAttribs(3, 2).withForwardCompatible(true).withProfileCore(true);
-			Display.setDisplayModeAndFullscreen(Display.getDesktopDisplayMode());
-			Display.setFullscreen(true);
+			if (border) {
+				Display.setDisplayMode(Display.getDesktopDisplayMode());
+			} else {
+				Display.setDisplayModeAndFullscreen(Display.getDesktopDisplayMode());
+				Display.setFullscreen(true);
+			}
 			Display.create(new PixelFormat(), attribs);
 			Display.setTitle(title);
 			Display.setVSyncEnabled(true);
