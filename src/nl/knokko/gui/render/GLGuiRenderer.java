@@ -117,11 +117,14 @@ public class GLGuiRenderer implements GuiRenderer {
 
 	@Override
 	public void renderTexture(GuiTexture texture, float minX, float minY, float maxX, float maxY) {
-		GL13.glActiveTexture(GL13.GL_TEXTURE0);
-		shader.loadPosition(minX * 2 - 1, minY * 2 - 1);
-		shader.loadSize(2 * (maxX - minX), 2 * (maxY - minY));
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getTextureID());
-		GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, 4);
+		if (minX <= 1 && minY <= 1 && maxX >= 0 && maxY >= 0) {
+			// Don't waste time rendering things that are completely off the screen
+			GL13.glActiveTexture(GL13.GL_TEXTURE0);
+			shader.loadPosition(minX * 2 - 1, minY * 2 - 1);
+			shader.loadSize(2 * (maxX - minX), 2 * (maxY - minY));
+			GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getTextureID());
+			GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, 4);
+		}
 	}
 
 	@Override
