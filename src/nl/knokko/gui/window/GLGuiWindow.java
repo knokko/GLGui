@@ -285,6 +285,11 @@ public class GLGuiWindow extends GuiWindow {
 	public GuiTextureLoader getTextureLoader() {
 		return textureLoader;
 	}
+	
+	@Override
+	public GLGuiRenderer getRenderer() {
+		return guiRenderer;
+	}
 
 	@Override
 	protected GuiComponentState createState() {
