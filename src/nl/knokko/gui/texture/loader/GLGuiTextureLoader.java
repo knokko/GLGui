@@ -23,6 +23,7 @@
  */
 package nl.knokko.gui.texture.loader;
 
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -99,6 +100,9 @@ public class GLGuiTextureLoader implements GuiTextureLoader {
 	    	return new GLGuiTexture(textureID);
 		} else {
 			BufferedImage image2 = new BufferedImage(next2Power(source.getWidth()), next2Power(source.getHeight()), source.getType());
+			Graphics2D g = image2.createGraphics();
+			g.drawImage(source, 0, 0, null);
+			g.dispose();
 			return loadTexture(image2, minX, minY, maxX, maxY);
 		}
 	}
@@ -130,6 +134,9 @@ public class GLGuiTextureLoader implements GuiTextureLoader {
 	    	return new GLGuiTexture(textureID);
 		} else {
 			BufferedImage image2 = new BufferedImage(next2Power(source.getWidth()), next2Power(source.getHeight()), source.getType());
+			Graphics2D g = image2.createGraphics();
+			g.drawImage(source, 0, 0, null);
+			g.dispose();
 			return loadTexture(image2, 0, 0, source.getWidth() - 1, source.getHeight() - 1);
 		}
 	}
