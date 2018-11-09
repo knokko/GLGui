@@ -55,6 +55,7 @@ import nl.knokko.gui.mousecode.GLMouseConverter;
 import nl.knokko.gui.render.GLGuiRenderer;
 import nl.knokko.gui.texture.loader.GLGuiTextureLoader;
 import nl.knokko.gui.texture.loader.GuiTextureLoader;
+import nl.knokko.gui.util.CharBuilder;
 import nl.knokko.gui.window.input.CharacterFilter;
 
 public class GLGuiWindow extends GuiWindow {
@@ -138,12 +139,14 @@ public class GLGuiWindow extends GuiWindow {
 		output.close();
 	}
 	
-	private GLGuiTextureLoader textureLoader;
-	private GLGuiRenderer guiRenderer;
+	private final GLGuiTextureLoader textureLoader;
+	private final GLGuiRenderer guiRenderer;
+	private final CharBuilder charBuilder;
 	
 	public GLGuiWindow(){
 		textureLoader = new GLGuiTextureLoader();
 		guiRenderer = new GLGuiRenderer(textureLoader);
+		charBuilder = new CharBuilder(textureLoader);
 	}
 	
 	public GLGuiWindow(GuiComponent mainComponent){
@@ -289,6 +292,11 @@ public class GLGuiWindow extends GuiWindow {
 	@Override
 	public GLGuiRenderer getRenderer() {
 		return guiRenderer;
+	}
+	
+	@Override
+	public CharBuilder getCharBuilder() {
+		return charBuilder;
 	}
 
 	@Override
