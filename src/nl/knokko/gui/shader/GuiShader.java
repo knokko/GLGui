@@ -64,6 +64,8 @@ public class GuiShader {
 	
 	private int locationScreenPosition;
 	private int locationSize;
+	
+	private int locationUV;
 
 	public GuiShader() {
 		vertexShaderID = loadShader(GuiShader.class.getClassLoader().getResource("nl/knokko/gui/shader/vertex.shader"), GL20.GL_VERTEX_SHADER);
@@ -76,6 +78,7 @@ public class GuiShader {
 		GL20.glValidateProgram(programID);
 		locationScreenPosition = GL20.glGetUniformLocation(programID, "screenPosition");
 		locationSize = GL20.glGetUniformLocation(programID, "size");
+		locationUV = GL20.glGetUniformLocation(programID, "uv");
 	}
 	
 	public void loadPosition(float x, float y){
@@ -84,6 +87,10 @@ public class GuiShader {
 	
 	public void loadSize(float width, float height){
 		GL20.glUniform2f(locationSize, width, height);
+	}
+	
+	public void loadBounds(float minU, float minV, float maxU, float maxV) {
+		GL20.glUniform4f(locationUV, minU, minV, maxU, maxV);
 	}
 	
 	public void start(){

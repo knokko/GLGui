@@ -75,12 +75,18 @@ public class GLGuiTextureLoader implements GuiTextureLoader {
 	public GuiTexture loadTexture(BufferedImage source, int minX, int minY, int maxX, int maxY) {
 		if (isPowerOf2(source.getWidth()) && isPowerOf2(source.getHeight())) {
 			boolean allowAlpha = source.getTransparency() != BufferedImage.OPAQUE;
-			int effWidth = maxX - minX + 1;
-			int effHeight = maxY - minY + 1;
-			ByteBuffer buffer = BufferUtils.createByteBuffer(effWidth * effHeight * (allowAlpha ? 4 : 3)); //4 for RGBA, 3 for RGB
-	    	for(int y = minY; y <= maxY; y++){
-	        	for(int x = minX; x <= maxX; x++){
-	        		int rgb = source.getRGB(x, y);
+			int width = source.getWidth();
+			int height = source.getHeight();
+			ByteBuffer buffer = BufferUtils.createByteBuffer(source.getWidth() * source.getHeight() * (allowAlpha ? 4 : 3)); //4 for RGBA, 3 for RGB
+	    	for(int y = 0; y < height; y++){
+	        	for(int x = 0; x < width; x++){
+	        		int effX = x - minX;
+	        		int effY = y - minY;
+	        		int rgb;
+	        		if (effX > 0 && effY > 0 && effX < width && effY < height)
+	        			rgb = source.getRGB(x, y);
+	        		else
+	        			rgb = 0;
 	        		buffer.put((byte) (rgb >> 16));
 	        		buffer.put((byte) (rgb >> 8));
 	        		buffer.put((byte) (rgb >> 0));
@@ -95,9 +101,9 @@ public class GLGuiTextureLoader implements GuiTextureLoader {
 	    	GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
 	    	GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
 	    	GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-	    	GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, allowAlpha ? GL11.GL_RGBA8 : GL11.GL_RGB8, effWidth, effHeight, 0, allowAlpha ? GL11.GL_RGBA : GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, buffer);
+	    	GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, allowAlpha ? GL11.GL_RGBA8 : GL11.GL_RGB8, source.getWidth(), source.getHeight(), 0, allowAlpha ? GL11.GL_RGBA : GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, buffer);
 	    	textures.add(textureID);
-	    	return new GLGuiTexture(textureID);
+	    	return new GLPartGuiTexture(textureID, (float) minX / width, (float) minY / height, (float) maxX / width, (float) maxY / height, width, height);
 		} else {
 			BufferedImage image2 = new BufferedImage(next2Power(source.getWidth()), next2Power(source.getHeight()), source.getType());
 			Graphics2D g = image2.createGraphics();
@@ -131,7 +137,7 @@ public class GLGuiTextureLoader implements GuiTextureLoader {
 	    	GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
 	    	GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, allowAlpha ? GL11.GL_RGBA8 : GL11.GL_RGB8, source.getWidth(), source.getHeight(), 0, allowAlpha ? GL11.GL_RGBA : GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, buffer);
 	    	textures.add(textureID);
-	    	return new GLGuiTexture(textureID);
+	    	return new GLGuiTexture(textureID, source.getWidth(), source.getHeight());
 		} else {
 			BufferedImage image2 = new BufferedImage(next2Power(source.getWidth()), next2Power(source.getHeight()), source.getType());
 			Graphics2D g = image2.createGraphics();
@@ -149,7 +155,7 @@ public class GLGuiTextureLoader implements GuiTextureLoader {
 			textures.add(id);
 			int width = texture.getImageWidth();
 			int height = texture.getImageHeight();
-			return new GLPartGuiTexture(id, (float) minX / width, 1f - (float) maxY / height, (float) maxX / width, 1f - (float) minY / height);
+			return new GLPartGuiTexture(id, (float) minX / width, 1f - (float) maxY / height, (float) maxX / width, 1f - (float) minY / height, maxX - minX + 1, maxY - minY + 1);
 		} catch (IOException e) {
 			errorOutput.println("Can't load texture '" + texturePath + "': " + e.getMessage());
 			e.printStackTrace(errorOutput);
@@ -163,7 +169,7 @@ public class GLGuiTextureLoader implements GuiTextureLoader {
 			Texture texture = TextureLoader.getTexture("PNG", GLGuiTextureLoader.class.getClassLoader().getResource(texturePath).openStream());
 			int id = texture.getTextureID();
 			textures.add(id);
-			return new GLGuiTexture(id);
+			return new GLGuiTexture(id, texture.getImageWidth(), texture.getImageHeight());
 		} catch (IOException e) {
 			errorOutput.println("Can't load texture '" + texturePath + "': " + e.getMessage());
 			e.printStackTrace(errorOutput);

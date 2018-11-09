@@ -122,6 +122,7 @@ public class GLGuiRenderer implements GuiRenderer {
 			GL13.glActiveTexture(GL13.GL_TEXTURE0);
 			shader.loadPosition(minX * 2 - 1, minY * 2 - 1);
 			shader.loadSize(2 * (maxX - minX), 2 * (maxY - minY));
+			shader.loadBounds(texture.getMinU(), texture.getMinV(), texture.getMaxU(), texture.getMaxV());
 			GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getTextureID());
 			GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, 4);
 		}
