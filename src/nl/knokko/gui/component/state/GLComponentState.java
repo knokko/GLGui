@@ -26,7 +26,6 @@ package nl.knokko.gui.component.state;
 import nl.knokko.gui.window.GLGuiWindow;
 
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
 
 public class GLComponentState implements GuiComponentState {
 	
@@ -43,20 +42,26 @@ public class GLComponentState implements GuiComponentState {
 
 	@Override
 	public float getMouseX() {
-		if(!Mouse.isInsideWindow())
-			return Float.NaN;
-		return (float) Mouse.getX() / Display.getWidth();
+		return window.getMouseX();
 	}
 
 	@Override
 	public float getMouseY() {
-		if(!Mouse.isInsideWindow())
-			return Float.NaN;
-		return (float) Mouse.getY() / Display.getHeight();
+		return window.getMouseY();
 	}
 
 	@Override
 	public GLGuiWindow getWindow(){
 		return window;
+	}
+
+	@Override
+	public float getMouseDX() {
+		return window.getMouseDX();
+	}
+
+	@Override
+	public float getMouseDY() {
+		return window.getMouseDY();
 	}
 }

@@ -143,6 +143,9 @@ public class GLGuiWindow extends GuiWindow {
 	private final GLGuiRenderer guiRenderer;
 	private final CharBuilder charBuilder;
 	
+	private int mouseDX;
+	private int mouseDY;
+	
 	public GLGuiWindow(){
 		textureLoader = new GLGuiTextureLoader();
 		guiRenderer = new GLGuiRenderer(textureLoader);
@@ -194,6 +197,8 @@ public class GLGuiWindow extends GuiWindow {
 
 	@Override
 	protected void preUpdate() {
+		mouseDX = 0;
+		mouseDY = 0;
 		while(Mouse.next()){
 			float scroll = Mouse.getEventDWheel() * 0.00025f;
 			//it appears that gl scrolling is 40 times more sensitive than awt scrolling
@@ -206,7 +211,7 @@ public class GLGuiWindow extends GuiWindow {
 					listener.postScroll(scroll);
 				}
 			}
-			else if(Mouse.getEventButton() != -1){
+			if(Mouse.getEventButton() != -1){
 				int button = GLMouseConverter.get(Mouse.getEventButton());
 				if(Mouse.getEventButtonState())
 					input.setMouseDown(button);
@@ -221,6 +226,8 @@ public class GLGuiWindow extends GuiWindow {
 					input.setMouseUp(button);
 				}
 			}
+			mouseDX += Mouse.getEventDX();
+			mouseDY += Mouse.getEventDY();
 		}
 		while(Keyboard.next()){
 			//KeyEvent (awt) and Keyboard (lwjgl) use different key codes...
@@ -254,6 +261,9 @@ public class GLGuiWindow extends GuiWindow {
 			//when state is false (keyRelease), the character is unknown
 		}
 	}
+	
+	@Override
+	protected void postUpdate() {}
 
 	@Override
 	protected void directRender() {
@@ -302,5 +312,29 @@ public class GLGuiWindow extends GuiWindow {
 	@Override
 	protected GuiComponentState createState() {
 		return new GLComponentState(this);
+	}
+
+	@Override
+	public float getMouseX() {
+		if (Mouse.isInsideWindow())
+			return (float) Mouse.getX() / Display.getWidth();
+		return Float.NaN;
+	}
+
+	@Override
+	public float getMouseY() {
+		if (Mouse.isInsideWindow())
+			return 1f - (float) Mouse.getY() / Display.getHeight();
+		return Float.NaN;
+	}
+	
+	@Override
+	public float getMouseDX() {
+		return (float) mouseDX / Display.getWidth();
+	}
+	
+	@Override
+	public float getMouseDY() {
+		return (float) mouseDY / Display.getHeight();
 	}
 }
