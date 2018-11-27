@@ -33,6 +33,8 @@ import org.lwjgl.opengl.GL20;
 
 public class GuiShader {
 	
+	public static final GuiShader GUI_SHADER = new GuiShader();
+	
 	private static int loadShader(URL url, int type){
         StringBuilder shaderSource = new StringBuilder();
         try {
@@ -67,7 +69,7 @@ public class GuiShader {
 	
 	private int locationUV;
 
-	public GuiShader() {
+	private GuiShader() {
 		vertexShaderID = loadShader(GuiShader.class.getClassLoader().getResource("nl/knokko/gui/shader/vertex.shader"), GL20.GL_VERTEX_SHADER);
 		fragmentShaderID = loadShader(GuiShader.class.getClassLoader().getResource("nl/knokko/gui/shader/fragment.shader"), GL20.GL_FRAGMENT_SHADER);
 		programID = GL20.glCreateProgram();

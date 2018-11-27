@@ -38,9 +38,10 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 import nl.knokko.gui.color.GuiColor;
-import nl.knokko.gui.shader.GuiShader;
 import nl.knokko.gui.texture.GuiTexture;
 import nl.knokko.gui.texture.loader.GLGuiTextureLoader;
+
+import static nl.knokko.gui.shader.GuiShader.GUI_SHADER;
 
 public class GLGuiRenderer implements GuiRenderer {
 	
@@ -69,7 +70,6 @@ public class GLGuiRenderer implements GuiRenderer {
 		GL30.glBindVertexArray(0);
 	}
 	
-	private GuiShader shader;
 	private int quadVAO;
 	private int quadVBO;
 	
@@ -81,14 +81,13 @@ public class GLGuiRenderer implements GuiRenderer {
 	}
 	
 	public void init(){
-		shader = new GuiShader();
 		loadModel();
 		colorMap = new HashMap<GuiColor,GuiTexture>();
 	}
 	
 	public void start(){
 		GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());
-		shader.start();
+		GUI_SHADER.start();
 		GL30.glBindVertexArray(quadVAO);
 		GL20.glEnableVertexAttribArray(0);
 		GL11.glEnable(GL11.GL_BLEND);
@@ -101,13 +100,13 @@ public class GLGuiRenderer implements GuiRenderer {
 		GL11.glDisable(GL11.GL_BLEND);
 		GL20.glDisableVertexAttribArray(0);
 		GL30.glBindVertexArray(0);
-		shader.stop();
+		GUI_SHADER.stop();
 	}
 	
 	public void clean(){
 		GL30.glDeleteVertexArrays(quadVAO);
 		GL15.glDeleteBuffers(quadVBO);
-		shader.clean();
+		GUI_SHADER.clean();
 	}
 
 	@Override
@@ -120,9 +119,9 @@ public class GLGuiRenderer implements GuiRenderer {
 		if (minX <= 1 && minY <= 1 && maxX >= 0 && maxY >= 0) {
 			// Don't waste time rendering things that are completely off the screen
 			GL13.glActiveTexture(GL13.GL_TEXTURE0);
-			shader.loadPosition(minX * 2 - 1, minY * 2 - 1);
-			shader.loadSize(2 * (maxX - minX), 2 * (maxY - minY));
-			shader.loadBounds(texture.getMinU(), texture.getMinV(), texture.getMaxU(), texture.getMaxV());
+			GUI_SHADER.loadPosition(minX * 2 - 1, minY * 2 - 1);
+			GUI_SHADER.loadSize(2 * (maxX - minX), 2 * (maxY - minY));
+			GUI_SHADER.loadBounds(texture.getMinU(), texture.getMinV(), texture.getMaxU(), texture.getMaxV());
 			GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getTextureID());
 			GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, 4);
 		}
