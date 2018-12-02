@@ -324,7 +324,7 @@ public class GLGuiWindow extends GuiWindow {
 	@Override
 	public float getMouseY() {
 		if (Mouse.isInsideWindow())
-			return 1f - (float) Mouse.getY() / Display.getHeight();
+			return (float) Mouse.getY() / Display.getHeight();
 		return Float.NaN;
 	}
 	
