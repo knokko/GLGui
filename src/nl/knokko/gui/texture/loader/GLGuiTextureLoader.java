@@ -80,13 +80,7 @@ public class GLGuiTextureLoader implements GuiTextureLoader {
 			ByteBuffer buffer = BufferUtils.createByteBuffer(source.getWidth() * source.getHeight() * (allowAlpha ? 4 : 3)); //4 for RGBA, 3 for RGB
 	    	for(int y = 0; y < height; y++){
 	        	for(int x = 0; x < width; x++){
-	        		int effX = x - minX;
-	        		int effY = y - minY;
-	        		int rgb;
-	        		if (effX > 0 && effY > 0 && effX < width && effY < height)
-	        			rgb = source.getRGB(x, y);
-	        		else
-	        			rgb = 0;
+	        		int rgb = source.getRGB(x, y);;
 	        		buffer.put((byte) (rgb >> 16));
 	        		buffer.put((byte) (rgb >> 8));
 	        		buffer.put((byte) (rgb >> 0));
