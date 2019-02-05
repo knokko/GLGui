@@ -146,15 +146,19 @@ public class GLGuiWindow extends GuiWindow {
 	private int mouseDX;
 	private int mouseDY;
 	
+	private boolean wasInWindow;
+	
 	public GLGuiWindow(){
 		textureLoader = new GLGuiTextureLoader();
 		guiRenderer = new GLGuiRenderer(textureLoader);
 		charBuilder = new CharBuilder(textureLoader);
+		setRenderContinuously(true);
 	}
 	
 	public GLGuiWindow(GuiComponent mainComponent){
 		this();
 		this.mainComponent = mainComponent;
+		setRenderContinuously(true);
 	}
 
 	@Override
@@ -197,6 +201,12 @@ public class GLGuiWindow extends GuiWindow {
 
 	@Override
 	protected void preUpdate() {
+		if (Display.isDirty()) {
+			markChange();
+		}
+		if (wasInWindow != Mouse.isInsideWindow()) {
+			markChange();
+		}
 		mouseDX = 0;
 		mouseDY = 0;
 		while(Mouse.next()){
@@ -229,6 +239,9 @@ public class GLGuiWindow extends GuiWindow {
 			mouseDX += Mouse.getEventDX();
 			mouseDY += Mouse.getEventDY();
 		}
+		if (mouseDX != 0 || mouseDY != 0) {
+			markChange();
+		}
 		while(Keyboard.next()){
 			//KeyEvent (awt) and Keyboard (lwjgl) use different key codes...
 			int[] codes = GLKeyConverter.getDirect(Keyboard.getEventKey());
@@ -260,6 +273,7 @@ public class GLGuiWindow extends GuiWindow {
 			}
 			//when state is false (keyRelease), the character is unknown
 		}
+		wasInWindow = Mouse.isInsideWindow();
 	}
 	
 	@Override
@@ -270,7 +284,6 @@ public class GLGuiWindow extends GuiWindow {
 		guiRenderer.start();
 		mainComponent.render(guiRenderer);
 		guiRenderer.stop();
-		Display.update();
 	}
 
 	@Override
@@ -286,6 +299,7 @@ public class GLGuiWindow extends GuiWindow {
 			if(listener == null || !listener.preRunLoop()){
 				update();
 				render();
+				Display.update();
 				Display.sync(fps);
 				if(listener != null)
 					listener.postRunLoop();
