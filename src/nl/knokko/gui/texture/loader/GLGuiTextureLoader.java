@@ -27,15 +27,16 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
-import org.newdawn.slick.opengl.Texture;
-import org.newdawn.slick.opengl.TextureLoader;
 
 import nl.knokko.gui.texture.GLGuiTexture;
 import nl.knokko.gui.texture.GLPartGuiTexture;
@@ -144,12 +145,12 @@ public class GLGuiTextureLoader implements GuiTextureLoader {
 	@Override
 	public GuiTexture loadTexture(String texturePath, int minX, int minY, int maxX, int maxY) {
 		try {
-			Texture texture = TextureLoader.getTexture("PNG", GLGuiTextureLoader.class.getClassLoader().getResource(texturePath).openStream());
-			int id = texture.getTextureID();
-			textures.add(id);
-			int width = texture.getImageWidth();
-			int height = texture.getImageHeight();
-			return new GLPartGuiTexture(id, (float) minX / width, 1f - (float) maxY / height, (float) maxX / width, 1f - (float) minY / height, maxX - minX + 1, maxY - minY + 1);
+			URL resource = GLGuiTextureLoader.class.getClassLoader().getResource(texturePath);
+			if (resource == null) {
+				throw new IOException("Can't find texture " + texturePath);
+			}
+			BufferedImage image = ImageIO.read(resource);
+			return loadTexture(image, minX, minY, maxX, maxY);
 		} catch (IOException e) {
 			errorOutput.println("Can't load texture '" + texturePath + "': " + e.getMessage());
 			e.printStackTrace(errorOutput);
@@ -160,10 +161,12 @@ public class GLGuiTextureLoader implements GuiTextureLoader {
 	@Override
 	public GuiTexture loadTexture(String texturePath) {
 		try {
-			Texture texture = TextureLoader.getTexture("PNG", GLGuiTextureLoader.class.getClassLoader().getResource(texturePath).openStream());
-			int id = texture.getTextureID();
-			textures.add(id);
-			return new GLGuiTexture(id, texture.getImageWidth(), texture.getImageHeight());
+			URL resource = GLGuiTextureLoader.class.getClassLoader().getResource(texturePath);
+			if (resource == null) {
+				throw new IOException("Can't find texture " + texturePath);
+			}
+			BufferedImage image = ImageIO.read(resource);
+			return loadTexture(image);
 		} catch (IOException e) {
 			errorOutput.println("Can't load texture '" + texturePath + "': " + e.getMessage());
 			e.printStackTrace(errorOutput);
