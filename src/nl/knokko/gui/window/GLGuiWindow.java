@@ -351,4 +351,40 @@ public class GLGuiWindow extends GuiWindow {
 	public float getMouseDY() {
 		return (float) mouseDY / Display.getHeight();
 	}
+
+	@Override
+	public int getWindowPosX() {
+		if (isOpen()) {
+			return Display.getX();
+		} else {
+			return -1;
+		}
+	}
+
+	@Override
+	public int getWidth() {
+		if (isOpen()) {
+			return Display.getWidth();
+		} else {
+			return -1;
+		}
+	}
+
+	@Override
+	public int getWindowPosY() {
+		if (isOpen()) {
+			return Display.getY();
+		} else {
+			return -1;
+		}
+	}
+
+	@Override
+	public int getHeight() {
+		if (isOpen()) {
+			return Display.getHeight();
+		} else {
+			return -1;
+		}
+	}
 }
