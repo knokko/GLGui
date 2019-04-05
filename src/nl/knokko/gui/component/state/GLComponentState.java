@@ -64,4 +64,24 @@ public class GLComponentState implements GuiComponentState {
 	public float getMouseDY() {
 		return window.getMouseDY();
 	}
+
+	@Override
+	public float getMinX() {
+		return 0;
+	}
+
+	@Override
+	public float getMinY() {
+		return 0;
+	}
+
+	@Override
+	public float getMaxX() {
+		return 1;
+	}
+
+	@Override
+	public float getMaxY() {
+		return 1;
+	}
 }
