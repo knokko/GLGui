@@ -363,6 +363,7 @@ public class GLGuiWindow extends GuiWindow {
 
 	@Override
 	public int getWidth() {
+		// TODO look into insets and fix this later
 		if (isOpen()) {
 			return Display.getWidth();
 		} else {
@@ -381,6 +382,45 @@ public class GLGuiWindow extends GuiWindow {
 
 	@Override
 	public int getHeight() {
+		// TODO look into insets and fix this later
+		if (isOpen()) {
+			return Display.getHeight();
+		} else {
+			return -1;
+		}
+	}
+
+	@Override
+	public int getPosX() {
+		// TODO look into insets and fix this later
+		if (isOpen()) {
+			return Display.getX();
+		} else {
+			return -1;
+		}
+	}
+
+	@Override
+	public int getWindowWidth() {
+		if (isOpen()) {
+			return Display.getWidth();
+		} else {
+			return -1;
+		}
+	}
+
+	@Override
+	public int getPosY() {
+		// TODO look into insets and fix this later
+		if (isOpen()) {
+			return Display.getY();
+		} else {
+			return -1;
+		}
+	}
+
+	@Override
+	public int getWindowHeight() {
 		if (isOpen()) {
 			return Display.getHeight();
 		} else {
