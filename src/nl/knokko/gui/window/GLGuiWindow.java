@@ -281,9 +281,8 @@ public class GLGuiWindow extends GuiWindow {
 
 	@Override
 	protected void directRender() {
-		guiRenderer.start();
 		mainComponent.render(guiRenderer);
-		guiRenderer.stop();
+		guiRenderer.maybeRenderNow();
 	}
 
 	@Override
